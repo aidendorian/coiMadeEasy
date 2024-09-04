@@ -13,7 +13,6 @@ from vertexai.generative_models import (
     GenerationConfig,
     HarmBlockThreshold,
     HarmCategory,
-    Image,
 )
 import IPython
 import time
@@ -30,7 +29,6 @@ from vertexai.generative_models import (
     GenerativeModel,
     HarmCategory,
     HarmBlockThreshold,
-    Image,
     Part,
 )
 from vertexai.language_models import TextEmbeddingModel
@@ -40,10 +38,9 @@ from vertexai.vision_models import MultiModalEmbeddingModel
 
 
 
+#here
 
 
-
-from vertexai.vision_models import Image as vision_model_Image
 
 # function to set embeddings as global variable
 
@@ -90,63 +87,8 @@ def get_text_embedding_from_text_embedding_model(
     return text_embedding
 
 
-def get_image_embedding_from_multimodal_embedding_model(
-    image_uri: str,
-    embedding_size: int = 512,
-    text: Optional[str] = None,
-    return_array: Optional[bool] = False,
-) -> list:
-    """Extracts an image embedding from a multimodal embedding model.
-    The function can optionally utilize contextual text to refine the embedding.
-
-    Args:
-        image_uri (str): The URI (Uniform Resource Identifier) of the image to process.
-        text (Optional[str]): Optional contextual text to guide the embedding generation. Defaults to "".
-        embedding_size (int): The desired dimensionality of the output embedding. Defaults to 512.
-        return_array (Optional[bool]): If True, returns the embedding as a NumPy array.
-        Otherwise, returns a list. Defaults to False.
-
-    Returns:
-        list: A list containing the image embedding values. If `return_array` is True, returns a NumPy array instead.
-    """
-    # image = Image.load_from_file(image_uri)
-    image = vision_model_Image.load_from_file(image_uri)
-    embeddings = multimodal_embedding_model.get_embeddings(
-        image=image, contextual_text=text, dimension=embedding_size
-    )  # 128, 256, 512, 1408
-    image_embedding = embeddings.image_embedding
-
-    if return_array:
-        image_embedding = np.fromiter(image_embedding, dtype=float)
-
-    return image_embedding
 
 
-def load_image_bytes(image_path):
-    """Loads an image from a URL or local file path.
-
-    Args:
-        image_uri (str): URL or local file path to the image.
-
-    Raises:
-        ValueError: If `image_uri` is not provided.
-
-    Returns:
-        bytes: Image bytes.
-    """
-    # Check if the image_uri is provided
-    if not image_path:
-        raise ValueError("image_uri must be provided.")
-
-    # Load the image from a weblink
-    if image_path.startswith("http://") or image_path.startswith("https://"):
-        response = requests.get(image_path, stream=True)
-        if response.status_code == 200:
-            return response.content
-
-    # Load the image from a local path
-    else:
-        return open(image_path, "rb").read()
 
 
 def get_pdf_doc_object(pdf_path: str) -> tuple[fitz.Document, int]:
@@ -320,32 +262,6 @@ def get_chunk_text_metadata(
     return text, page_text_embeddings_dict, chunked_text_dict, chunk_embeddings_dict
 
 
-def get_image_for_gemini(
-    doc: fitz.Document,
-    image: tuple,
-    image_no: int,
-    image_save_dir: str,
-    file_name: str,
-    page_num: int,
-) -> Tuple[Image, str]:
-    """
-    Extracts an image from a PDF document, converts it to JPEG format (handling color conversions), saves it, and loads it as a PIL Image Object.
-    """
-
-    xref = image[0]
-    pix = fitz.Pixmap(doc, xref)
-
-    # Check and convert color space if needed
-    if pix.colorspace not in (fitz.csGRAY, fitz.csRGB, fitz.csCMYK):
-        pix = fitz.Pixmap(fitz.csRGB, pix)  # Convert to RGB, which JPEG supports
-
-    # Now save as JPEG (no need for pix.tobytes("jpeg"))
-    image_name = f"image_{page_num}_{image_no}_{xref}.jpeg"
-    os.makedirs(image_save_dir, exist_ok=True)
-    pix.save(image_name)
-
-    image_for_gemini = Image.load_from_file(image_name)
-    return image_for_gemini, image_name
 
 
 
@@ -435,53 +351,12 @@ def get_text_metadata_df(
     return return_df
 
 
-def get_image_metadata_df(
-    filename: str, image_metadata: Dict[Union[int, str], Dict]
-) -> pd.DataFrame:
-    """
-    This function takes a filename and an image metadata dictionary as input,
-    iterates over the image metadata dictionary and extracts the image path,
-    image description, and image embeddings for each image, creates a Pandas
-    DataFrame with the extracted data, and returns it.
 
-    Args:
-        filename: The filename of the document.
-        image_metadata: A dictionary containing the image metadata for each page.
-
-    Returns:
-        A Pandas DataFrame with the extracted image path, image description, and image embeddings for each image.
-    """
-
-    final_data_image: List[Dict] = []
-    for key, values in image_metadata.items():
-        for _, image_values in values.items():
-            data: Dict = {}
-            data["file_name"] = filename
-            data["page_num"] = int(key) + 1
-            data["img_num"] = int(image_values["img_num"])
-            data["img_path"] = image_values["img_path"]
-            data["img_desc"] = image_values["img_desc"]
-            # data["mm_embedding_from_text_desc_and_img"] = image_values[
-            #     "mm_embedding_from_text_desc_and_img"
-            # ]
-            data["mm_embedding_from_img_only"] = image_values[
-                "mm_embedding_from_img_only"
-            ]
-            data["text_embedding_from_image_description"] = image_values[
-                "text_embedding_from_image_description"
-            ]
-            final_data_image.append(data)
-
-    return_df = pd.DataFrame(final_data_image).dropna()
-    return_df = return_df.reset_index(drop=True)
-    return return_df
 
 
 def get_document_metadata(
     generative_multimodal_model,
     pdf_folder_path: str,
-    image_save_dir: str,
-    image_description_prompt: str,
     embedding_size: int = 128,
     generation_config: Optional[GenerationConfig] = GenerationConfig(
         temperature=0.2, max_output_tokens=2048
@@ -492,24 +367,10 @@ def get_document_metadata(
     sleep_time_after_page: int = 2,
     add_sleep_after_document: bool = False,
     sleep_time_after_document: int = 2,
-) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """
-    This function takes a PDF path, an image save directory, an image description prompt, an embedding size, and a text embedding text limit as input.
+) -> Tuple[pd.DataFrame]:
 
-    Args:
-        pdf_path: The path to the PDF document.
-        image_save_dir: The directory where extracted images should be saved.
-        image_description_prompt: A prompt to guide Gemini for generating image descriptions.
-        embedding_size: The dimensionality of the embedding vectors.
-        text_emb_text_limit: The maximum number of tokens for text embedding.
 
-    Returns:
-        A tuple containing two DataFrames:
-            * One DataFrame containing the extracted text metadata for each page of the PDF, including the page text, chunked text dictionaries, and chunk embedding dictionaries.
-            * Another DataFrame containing the extracted image metadata for each image in the PDF, including the image path, image description, image embeddings (with and without context), and image description text embedding.
-    """
-
-    text_metadata_df_final, image_metadata_df_final = pd.DataFrame(), pd.DataFrame()
+    text_metadata_df_final= pd.DataFrame()
 
     for pdf_path in glob.glob(pdf_folder_path + "/*.pdf"):
         print(
@@ -524,7 +385,6 @@ def get_document_metadata(
         file_name = pdf_path.split("/")[-1]
 
         text_metadata: Dict[Union[int, str], Dict] = {}
-        image_metadata: Dict[Union[int, str], Dict] = {}
 
         for page_num in range(num_pages):
             print(f"Processing page: {page_num + 1}")
@@ -545,48 +405,6 @@ def get_document_metadata(
                 "chunked_text_dict": chunked_text_dict,
                 "chunk_embeddings_dict": chunk_embeddings_dict,
             }
-
-            images = page.get_images()
-            image_metadata[page_num] = {}
-
-            for image_no, image in enumerate(images):
-                image_number = int(image_no + 1)
-                image_metadata[page_num][image_number] = {}
-
-                image_for_gemini, image_name = get_image_for_gemini(
-                    doc, image, image_no, image_save_dir, file_name, page_num
-                )
-
-                print(
-                    f"Extracting image from page: {page_num + 1}, saved as: {image_name}"
-                )
-
-                response = get_gemini_response(
-                    generative_multimodal_model,
-                    model_input=[image_description_prompt, image_for_gemini],
-                    generation_config=generation_config,
-                    safety_settings=safety_settings,
-                    stream=True,
-                )
-                print(type(response)," 2")
-                image_embedding = get_image_embedding_from_multimodal_embedding_model(
-                    image_uri=image_name,
-                    embedding_size=embedding_size,
-                )
-
-                image_description_text_embedding = (
-                    get_text_embedding_from_text_embedding_model(text=response)
-                )
-
-                image_metadata[page_num][image_number] = {
-                    "img_num": image_number,
-                    "img_path": image_name,
-                    "img_desc": response,
-                    # "mm_embedding_from_text_desc_and_img": image_embedding_with_description,
-                    "mm_embedding_from_img_only": image_embedding,
-                    "text_embedding_from_image_description": image_description_text_embedding,
-                }
-
             # Add sleep to reduce issues with Quota error on API
             if add_sleep_after_page:
                 time.sleep(sleep_time_after_page)
@@ -605,23 +423,13 @@ def get_document_metadata(
             )
 
         text_metadata_df = get_text_metadata_df(file_name, text_metadata)
-        image_metadata_df = get_image_metadata_df(file_name, image_metadata)
 
         text_metadata_df_final = pd.concat(
             [text_metadata_df_final, text_metadata_df], axis=0
         )
-        image_metadata_df_final = pd.concat(
-            [
-                image_metadata_df_final,
-                image_metadata_df.drop_duplicates(subset=["img_desc"]),
-            ],
-            axis=0,
-        )
 
         text_metadata_df_final = text_metadata_df_final.reset_index(drop=True)
-        image_metadata_df_final = image_metadata_df_final.reset_index(drop=True)
-
-    return text_metadata_df_final, image_metadata_df_final
+    return text_metadata_df_final
 
 
 # Helper Functions
@@ -642,25 +450,6 @@ def get_user_query_text_embeddings(user_query: str) -> np.ndarray:
     return get_text_embedding_from_text_embedding_model(user_query)
 
 
-def get_user_query_image_embeddings(
-    image_query_path: str, embedding_size: int
-) -> np.ndarray:
-    """
-    Extracts image embeddings for the user query image using a multimodal embedding model.
-
-    Args:
-        image_query_path: The path to the user query image.
-        embedding_size: The desired embedding size.
-
-    Returns:
-        A NumPy array representing the user query image embedding.
-    """
-
-    return get_image_embedding_from_multimodal_embedding_model(
-        image_uri=image_query_path, embedding_size=embedding_size
-    )
-
-
 def get_cosine_score(
     dataframe: pd.DataFrame, column_name: str, input_text_embd: np.ndarray
 ) -> float:
@@ -679,59 +468,6 @@ def get_cosine_score(
     text_cosine_score = round(np.dot(dataframe[column_name], input_text_embd), 2)
     return text_cosine_score
 
-
-def print_text_to_image_citation(
-    final_images: Dict[int, Dict[str, Any]], print_top: bool = True
-) -> None:
-    """
-    Prints a formatted citation for each matched image in a dictionary.
-
-    Args:
-        final_images: A dictionary containing information about matched images,
-                    with keys as image number and values as dictionaries containing
-                    image path, page number, page text, cosine similarity score, and image description.
-        print_top: A boolean flag indicating whether to only print the first citation (True) or all citations (False).
-
-    Returns:
-        None (prints formatted citations to the console).
-    """
-
-    color = Color()
-
-    # Iterate through the matched image citations
-    for imageno, image_dict in final_images.items():
-        # Print the citation header
-        print(
-            color.RED + f"Citation {imageno + 1}:",
-            "Matched image path, page number and page text: \n" + color.END,
-        )
-
-        # Print the cosine similarity score
-        print(color.BLUE + "score: " + color.END, image_dict["cosine_score"])
-
-        # Print the file_name
-        print(color.BLUE + "file_name: " + color.END, image_dict["file_name"])
-
-        # Print the image path
-        print(color.BLUE + "path: " + color.END, image_dict["img_path"])
-
-        # Print the page number
-        print(color.BLUE + "page number: " + color.END, image_dict["page_num"])
-
-        # Print the page text
-        print(
-            color.BLUE + "page text: " + color.END, "\n".join(image_dict["page_text"])
-        )
-
-        # Print the image description
-        print(
-            color.BLUE + "image description: " + color.END,
-            image_dict["image_description"],
-        )
-
-        # Only print the first citation if print_top is True
-        if print_top and imageno == 0:
-            break
 
 
 def print_text_to_text_citation(
@@ -782,112 +518,6 @@ def print_text_to_text_citation(
         # Only print the first citation if print_top is True
         if print_top and textno == 0:
             break
-
-
-def get_similar_image_from_query(
-    text_metadata_df: pd.DataFrame,
-    image_metadata_df: pd.DataFrame,
-    query: str = "",
-    image_query_path: str = "",
-    column_name: str = "",
-    image_emb: bool = True,
-    top_n: int = 3,
-    embedding_size: int = 128,
-) -> Dict[int, Dict[str, Any]]:
-    """
-    Finds the top N most similar images from a metadata DataFrame based on a text query or an image query.
-
-    Args:
-        text_metadata_df: A Pandas DataFrame containing text metadata associated with the images.
-        image_metadata_df: A Pandas DataFrame containing image metadata (paths, descriptions, etc.).
-        query: The text query used for finding similar images (if image_emb is False).
-        image_query_path: The path to the image used for finding similar images (if image_emb is True).
-        column_name: The column name in the image_metadata_df containing the image embeddings or captions.
-        image_emb: Whether to use image embeddings (True) or text captions (False) for comparisons.
-        top_n: The number of most similar images to return.
-        embedding_size: The dimensionality of the image embeddings (only used if image_emb is True).
-
-    Returns:
-        A dictionary containing information about the top N most similar images, including cosine scores, image objects, paths, page numbers, text excerpts, and descriptions.
-    """
-    # Check if image embedding is used
-    if image_emb:
-        # Calculate cosine similarity between query image and metadata images
-        user_query_image_embedding = get_user_query_image_embeddings(
-            image_query_path, embedding_size
-        )
-        cosine_scores = image_metadata_df.apply(
-            lambda x: get_cosine_score(x, column_name, user_query_image_embedding),
-            axis=1,
-        )
-    else:
-        # Calculate cosine similarity between query text and metadata image captions
-        user_query_text_embedding = get_user_query_text_embeddings(query)
-        cosine_scores = image_metadata_df.apply(
-            lambda x: get_cosine_score(x, column_name, user_query_text_embedding),
-            axis=1,
-        )
-
-    # Remove same image comparison score when user image is matched exactly with metadata image
-    cosine_scores = cosine_scores[cosine_scores < 1.0]
-
-    # Get top N cosine scores and their indices
-    top_n_cosine_scores = cosine_scores.nlargest(top_n).index.tolist()
-    top_n_cosine_values = cosine_scores.nlargest(top_n).values.tolist()
-
-    # Create a dictionary to store matched images and their information
-    final_images: Dict[int, Dict[str, Any]] = {}
-
-    for matched_imageno, indexvalue in enumerate(top_n_cosine_scores):
-        # Create a sub-dictionary for each matched image
-        final_images[matched_imageno] = {}
-
-        # Store cosine score
-        final_images[matched_imageno]["cosine_score"] = top_n_cosine_values[
-            matched_imageno
-        ]
-
-        # Load image from file
-        final_images[matched_imageno]["image_object"] = Image.load_from_file(
-            image_metadata_df.iloc[indexvalue]["img_path"]
-        )
-
-        # Add file name
-        final_images[matched_imageno]["file_name"] = image_metadata_df.iloc[indexvalue][
-            "file_name"
-        ]
-
-        # Store image path
-        final_images[matched_imageno]["img_path"] = image_metadata_df.iloc[indexvalue][
-            "img_path"
-        ]
-
-        # Store page number
-        final_images[matched_imageno]["page_num"] = image_metadata_df.iloc[indexvalue][
-            "page_num"
-        ]
-
-        final_images[matched_imageno]["page_text"] = np.unique(
-            text_metadata_df[
-                (
-                    text_metadata_df["page_num"].isin(
-                        [final_images[matched_imageno]["page_num"]]
-                    )
-                )
-                & (
-                    text_metadata_df["file_name"].isin(
-                        [final_images[matched_imageno]["file_name"]]
-                    )
-                )
-            ]["text"].values
-        )
-
-        # Store image description
-        final_images[matched_imageno]["image_description"] = image_metadata_df.iloc[
-            indexvalue
-        ]["img_desc"]
-
-    return final_images
 
 
 def get_similar_text_from_query(
@@ -976,44 +606,10 @@ def get_similar_text_from_query(
 
     return final_text
 
-
-def display_images(
-    images: Iterable[Union[str, PIL.Image.Image]], resize_ratio: float = 0.5
-) -> None:
-    """
-    Displays a series of images provided as paths or PIL Image objects.
-
-    Args:
-        images: An iterable of image paths or PIL Image objects.
-        resize_ratio: The factor by which to resize each image (default 0.5).
-
-    Returns:
-        None (displays images using IPython or Jupyter notebook).
-    """
-
-    # Convert paths to PIL images if necessary
-    pil_images = []
-    for image in images:
-        if isinstance(image, str):
-            pil_images.append(PIL.Image.open(image))
-        else:
-            pil_images.append(image)
-
-    # Resize and display each image
-    for img in pil_images:
-        original_width, original_height = img.size
-        new_width = int(original_width * resize_ratio)
-        new_height = int(original_height * resize_ratio)
-        resized_img = img.resize((new_width, new_height))
-        display(resized_img)
-        print("\n")
-        
 def get_answer_from_qa_system(
     query: str,
     text_metadata_df,
-    image_metadata_df,
     top_n_text: int = 10,
-    top_n_image: int = 5,
     instruction: Optional[str] = None,
     model=None,
     generation_config: Optional[GenerationConfig] = GenerationConfig(
@@ -1022,14 +618,12 @@ def get_answer_from_qa_system(
     safety_settings: Optional[dict] = {
     },
 ) -> Union[str, None]:
-    """Fetches answers from a combined text and image-based QA system.
+    """Fetches answers from a combined text QA system.
 
     Args:
         query (str): The user's question.
         text_metadata_df: DataFrame containing text embeddings, file names, and page numbers.
-        image_metadata_df: DataFrame containing image embeddings, paths, and descriptions.
         top_n_text (int, optional): Number of top text chunks to consider. Defaults to 10.
-        top_n_image (int, optional): Number of top images to consider. Defaults to 5.
         instruction (str, optional): Customized instruction for the model. Defaults to a generic one.
         model: Model to use for QA.
         safety_settings: Safety settings for the model.
@@ -1040,10 +634,10 @@ def get_answer_from_qa_system(
     """
     # Build Gemini content
     if instruction is None:  # Use default instruction if not provided
-        instruction = """Task: Answer the following questions in detail, providing clear reasoning and evidence from the images and text in bullet points.
+        instruction = """Task: Answer the following questions in detail, providing clear reasoning and evidence from the text in bullet points.
                       Instructions:
 
-                      1. **Analyze:** Carefully examine the provided images and text context.
+                      1. **Analyze:** Carefully examine the provided text context.
                       2. **Synthesize:** Integrate information from both the visual and textual elements.
                       3. **Reason:**  Deduce logical connections and inferences to address the question.
                       4. **Respond:** Provide a concise, accurate answer in the following format:
@@ -1051,7 +645,7 @@ def get_answer_from_qa_system(
                         * **Question:** [Question]
                         * **Answer:** [Direct response to the question]
                         * **Explanation:** [Bullet-point reasoning steps if applicable]
-                        * **Source** [name of the file, page, image from where the information is citied]
+                        * **Source** [name of the file, page from where the information is citied]
 
                       5. **Ambiguity:** If the context is insufficient to answer, respond "Not enough context to answer."
 
@@ -1065,17 +659,6 @@ def get_answer_from_qa_system(
         top_n=top_n_text,
         chunk_text=True,
     )
-    # Get all relevant images based on user query
-    matching_results_image_fromdescription_data = get_similar_image_from_query(
-        text_metadata_df,
-        image_metadata_df,
-        query=query,
-        column_name="text_embedding_from_image_description",
-        image_emb=False,
-        top_n=top_n_image,
-        embedding_size=1408,
-    )
-
     # combine all the selected relevant text chunks
     context_text = ["Text Context: "]
     for key, value in matching_results_chunks_data.items():
@@ -1087,31 +670,9 @@ def get_answer_from_qa_system(
                 value["chunk_text"],
             ]
         )
-
-    # combine all the selected relevant images
-    gemini_content = [
-        instruction,
-        "Questions: ",
-        query,
-        "Image Context: ",
-    ]
-    for key, value in matching_results_image_fromdescription_data.items():
-        gemini_content.extend(
-            [
-                "Image Path: ",
-                value["img_path"],
-                "Image Description: ",
-                value["image_description"],
-                "Image:",
-                value["image_object"],
-            ]
-        )
-    gemini_content.extend(context_text)
-
     # Get Gemini response with streaming (if supported)
     response = get_gemini_response(
         model,
-        model_input=gemini_content,
         stream=True,
         safety_settings=safety_settings,
         generation_config=generation_config,
@@ -1120,5 +681,4 @@ def get_answer_from_qa_system(
     return (
         response,
         matching_results_chunks_data,
-        matching_results_image_fromdescription_data,
     )
