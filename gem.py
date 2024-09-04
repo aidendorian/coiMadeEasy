@@ -13,16 +13,12 @@ from vertexai.generative_models import (
     GenerativeModel,
     HarmCategory,
     HarmBlockThreshold,
-    Image,
     Part,
 )
 from multimodal_qa_with_rag_utils import (
     get_similar_text_from_query,
     print_text_to_text_citation,
-    get_similar_image_from_query,
-    print_text_to_image_citation,
     get_gemini_response,
-    display_images,
     get_answer_from_qa_system,
 )
 import sys
@@ -51,19 +47,10 @@ from multimodal_qa_with_rag_utils import (
 set_global_variable("text_embedding_model", text_embedding_model)
 set_global_variable("multimodal_embedding_model", multimodal_embedding_model)
 pdf_folder_path = "C:\\VS Codex\\Python\\data\\"
-image_description_prompt = """You will be presented with financial related text. Analyse the text and give clear and concise answers
-Important Guidelines:
-* Prioritize accuracy:  If you are uncertain about any detail, state "Unknown" or "Not visible" instead of guessing.
-* Avoid hallucinations: Do not add information that is not directly supported by the image.
-* Be specific: Use precise language to describe shapes, colors, textures, and any interactions depicted.
-* Consider context: If the image is a screenshot or contains text, incorporate that information into your description.
-"""
 
-text_metadata_df, image_metadata_df = get_document_metadata(
+text_metadata_df = get_document_metadata(
     multimodal_model_15,
     pdf_folder_path,
-    image_save_dir="C:\\VS Codex\\Python\\img\\",
-    image_description_prompt=image_description_prompt,
     embedding_size=1408,
     add_sleep_after_page = True,
     sleep_time_after_page = 5,
@@ -74,13 +61,11 @@ text_metadata_df, image_metadata_df = get_document_metadata(
 
 
 print("\n\n --- Completed processing. ---")
-print(
-    "Removing pre-existing images folder, since you are running the logic from scratch"
-)
 
 
 
-query = "summarise article 32A"
+
+query = "What was in article 32A before it was repealed"
 
 
 
@@ -114,7 +99,7 @@ rich_Markdown(
         model_input=prompt,
         stream=True,
         safety_settings=safety_settings,
-        generation_config=GenerationConfig(temperature=1, max_output_tokens=8192),
+        generation_config=GenerationConfig(temperature=0.5, max_output_tokens=8192),
     )
 )
 
