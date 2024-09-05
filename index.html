@@ -3,72 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Layout</title>
+    <title>Home</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Header Section -->
     <header>
-        <h1>Header</h1>
+        <h1>NAGRIK AUR SAMVIDHAN</h1>
     </header>
 
     <!-- Navbar Section -->
-    <!-- Navbar Section -->
-<nav>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="articles.html">Articles</a></li>
-        <li><a href="games.html">Games</a></li>
-        <li><a href="about.html">About</a></li>
-    </ul>
-</nav>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="articles.html">Articles</a></li>
+            <li><a href="games.html">Games</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
 
-
-    <!-- Hero Section -->
+    <!-- Hero Section with Video -->
     <section id="hero">
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" placeholder="Search..." id="search">
-            <button type="submit">Search</button>
-        </div>
 
-        <!-- Centered XYZ Heading over Video -->
-        <h2 class="xyz-overlay">XYZ</h2>
+        <!-- Search Bar Above the Video -->
+        <form id="search-bar">
+            <input type="text" placeholder="Ask..." aria-label="Search">
+            <button type="submit">Answer</button>
+        </form>
 
-        <div class="video-container">
-            <video autoplay loop>
-                <source src="video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+        <!-- Video -->
+        <video autoplay loop >
+            <source src="video.mp4" type="video/mp4">
+        </video>
+    </section>
+
+    <!-- New Photo Section Below XYZ -->
+    <section id="photo-section">
+        <h2>Photo Gallery</h2>
+        <div class="photo-container">
+            <img src="1.jpeg" alt="Gallery Photo" class="photo">
+            <img src="2.jpeg" alt="Gallery Photo" class="photo">
+            <img src="3.jpeg" alt="Gallery Photo" class="photo">
+            <img src="4.jpeg" alt="Gallery Photo" class="photo">
+            <img src="5.jpeg" alt="Gallery Photo" class="photo">
+            <img src="6.jpeg" alt="Gallery Photo" class="photo">
+            <img src="7.jpeg" alt="Gallery Photo" class="photo">
         </div>
     </section>
+
 
     <!-- XYZ Section -->
     <section id="xyz">
-        <h2>XYZ</h2>
-        <h3>Subtitle 1</h3>
-        <p>This is the first subtitle description.</p>
-        <h3>Subtitle 2</h3>
-        <p>This is the second subtitle description.</p>
-        <h3>Subtitle 3</h3>
-        <p>This is the third subtitle description.</p>
-    </section>
-
-    <!-- Games Section -->
-    <section id="games">
-        <h2>Games</h2>
-        <a href="games.html">Go to Games</a>
-    </section>
-
-    <!-- About Section -->
-    <section id="about">
-        <h2>About</h2>
-        <a href="about.html">Learn More About Us</a>
+        <h2>Top Stories</h2>
+        <iframe src="https://www.indiankanoon.org/" width="100%" height="500px" style="border:none;"></iframe>
     </section>
 
     <!-- Footer -->
-    <footer>
-        <p>Footer Content</p>
-    </footer>
+   <!-- Footer Section -->
+<footer>
+    <div class="footer-container">
+        <div class="footer-content">
+            <!-- Column 1 -->
+            <div class="footer-column">
+                <h3>ZeroCoders®</h3>
+            </div>
+            
+            <!-- Column 2 -->
+            <div class="footer-column">
+                <h4>INDIA</h4>
+                <p>
+                    <a href="mailto:pandayvaibhav78@gmail.com">ZeroCoders®.com</a><br>
+                    +91 0000000000<br>
+                   </a>
+                </p>
+            </div>
+
+            <!-- Column 4 -->
+            <div class="footer-column">
+                <p>
+                    FOLLOW US<br>
+                    <a href="#">facebook</a> | <a href="#">Instagram</a> | <a href="#">twitter</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>
