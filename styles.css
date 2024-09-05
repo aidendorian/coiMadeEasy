@@ -3,20 +3,102 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #d8d7c9;
 }
 
 /* Header */
 header {
-    background-color: #1b0808;
+    background-color: #333;
     color: white;
-    padding:1px;
+    padding: 0.5px;
     text-align: center;
 }
 
+/* Hero Section */
+#hero {
+    position: relative;
+    padding: 20px;
+    text-align: center;
+    background-color: #d8d7c9;
+}
+
+
+/* Styling the Search Bar */
+/* Search Section */
+#search-section {
+    padding: 20px;
+    background-color: #d8d7c9;
+    text-align: center;
+}
+
+#search-bar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#search-bar input[type="text"] {
+    width: 300px;
+    margin: 10px;
+    padding: 10px;
+    font-size: 1.2rem;
+    border: 2px solid #ddd;
+    border-radius: 50px 0 0 50px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#search-bar input[type="text"]:focus {
+    width: 400px; /* Expands the input field on focus */
+    border-color: #333;
+    box-shadow: 0 0 10px rgba(51, 51, 51, 0.5); /* Glow effect */
+}
+
+#search-bar button {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 50px 50px 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+#search-bar button:hover {
+    background-color: #555;
+    box-shadow: 0 0 10px rgba(51, 51, 51, 0.3);
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Interactive Effects */
+#search-bar button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Gradient background */
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+#search-bar button:hover:before {
+    opacity: 1; /* Show gradient on hover */
+}
+
+
 /* Navbar */
 nav {
-    background-color: #444;
+    background-color: #544343;
     padding: 10px;
 }
 
@@ -51,20 +133,43 @@ nav ul li a.active {
 }
 
 
-/* Hero Section */
+/* Games Section */
+#games {
+    padding: 20px;
+    text-align: center;
+}
+
+.game-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.game-item {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+
 /* Hero Section */
 #hero {
-    position: relative;
-    padding: 0;
-    margin: 0;
+    position:relative;
+    padding:0px ;
+    margin:0px;
     height: 100vh; /* Full viewport height */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border: none;
-    overflow: hidden; /* Ensure video covers entire div */
-    background-color: #000; /* Add background in case video doesn't cover fully */
+    overflow:hidden; /* Ensure video covers entire div */
+    background-color: #ffffff; /* Add background in case video doesn't cover fully */
 }
 
 /* Video Container */
@@ -80,8 +185,8 @@ nav ul li a.active {
 .video-container video {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures video fills the container without distortion */
-    border: none;
+    object-fit:fill; /* Ensures video fills the container without distortion */
+    border:none;
 }
 
 
@@ -107,42 +212,7 @@ p {
     margin: 10px 0;
 }
 
-/* Search Bar */
-.search-bar {
-    text-align: center;
-    margin-bottom: 20px;
-}
 
-.search-bar input[type="text"] {
-    padding: 10px;
-    width: 300px;
-    border-radius: 25px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    transition: width 0.3s ease;
-}
-
-.search-bar input[type="text"]:focus {
-    width: 400px;
-    outline: none;
-    border-color: #333;
-}
-
-.search-bar button {
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.search-bar button:hover {
-    background-color: #555;
-}
 
 /* Article Section */
 #articles {
@@ -212,16 +282,129 @@ section {
     background-color: #fff;
 }
 
-/* Footer */
-footer {
-    background-color: #1b0808;
-    color: rgb(236, 230, 230);
+/* Photo Section */
+#photo-section {
+    padding: 40px;
     text-align: center;
-    padding: 10px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    background-color: #f9f9f9;
+    margin-top: 20px;
 }
+
+#photo-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.photo-container {
+    display: flex;
+    justify-content: center;
+}
+
+.photo {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.photo:hover {
+    transform: scale(1.05); /* Zoom effect on hover */
+}
+
+
+/* About Section */
+#about {
+    padding: 20px;
+    text-align: center;
+}
+
+#about p {
+    max-width: 800px;
+    margin: 0 auto;
+    color: #666;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+
+/* Footer Section */
+footer {
+    background-color: #111; /* Dark background */
+    color: white;
+    padding: 40px 20px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 220px; /* Ensures the columns stack when screen width is small */
+    margin-bottom: 20px;
+}
+
+.footer-column h3, .footer-column h4 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.footer-column a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-column a:hover {
+    text-decoration: underline;
+}
+
+.footer-column p {
+    line-height: 1.6;
+}
+
+/* Styling for CTA and Follow Links */
+footer a {
+    text-transform: uppercase;
+}
+
+footer .footer-column h4, footer .footer-column a {
+    letter-spacing: 1px;
+}
+
+.footer-column p a {
+    color: yellow; /* Highlighted arrow or links */
+}
+
+footer .footer-column p a:hover {
+    color: #dcdcdc; /* Change color slightly on hover */
+}
+
+footer .footer-column a:after {
+    content: " ➔"; /* Arrow symbol after links */
+}
+
+/* For Responsive Footer */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: left;
+    }
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -244,9 +427,3 @@ footer {
         width: 100%;
     }
 }
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-  }
