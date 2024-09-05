@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Indian Constitution Fact</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .fact-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .fact-container button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .fact-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="fact-container">
+        <h1>Random Indian Constitution Fact</h1>
+        <p id="fact">Click the button to see a random fact.</p>
+        <button onclick="displayRandomFact()">Show Another Fact</button>
+    </div>
+
+    <script>
+        // List of facts about the Indian Constitution
+        const facts = [
+            "The Indian Constitution is the longest written constitution in the world.",
+            "It was adopted on 26th November 1949 and came into effect on 26th January 1950.",
+            "The Constituent Assembly took 2 years, 11 months, and 18 days to draft the Constitution.",
+            "Dr. B.R. Ambedkar is considered the chief architect of the Indian Constitution.",
+            "The original Constitution of India was written by hand in both English and Hindi.",
+            "The Constitution has 12 Schedules, 25 Parts, and 448 Articles.",
+            "It guarantees six fundamental rights to the citizens of India.",
+            "The Preamble of the Constitution declares India as a Sovereign, Socialist, Secular, Democratic Republic.",
+            "The concept of Fundamental Duties was added by the 42nd Amendment in 1976.",
+            "India follows a federal system with a unitary bias as per the Constitution.",
+            "The Constitution provides for an independent judiciary with the Supreme Court at its apex.",
+            "Article 32 of the Constitution allows citizens to approach the Supreme Court directly for the enforcement of fundamental rights.",
+            "The Constitution of India was influenced by various other constitutions, including the British, American, and Irish Constitutions.",
+            "The President of India is the ceremonial head of state, while the Prime Minister is the head of government.",
+            "The Constitution provides for a single citizenship for the whole country.",
+            "The Directive Principles of State Policy aim to create social and economic conditions under which citizens can lead a good life.",
+            "The Constitution can be amended, but the basic structure cannot be altered as per the Kesavananda Bharati case in 1973.",
+            "The 73rd and 74th Amendments provide for the institution of Panchayati Raj and Municipalities, respectively.",
+            "The Right to Information Act, 2005 is based on the Constitutional right to freedom of speech and expression.",
+            "The Constitution empowers the Parliament to make laws on subjects in the Union and Concurrent Lists."
+        ];
+
+        // Function to display a random fact
+        function displayRandomFact() {
+            const randomFact = facts[Math.floor(Math.random() * facts.length)];
+            document.getElementById("fact").innerText = randomFact;
+        }
+    </script>
+</body>
+</html>

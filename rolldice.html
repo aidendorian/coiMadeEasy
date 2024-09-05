@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roll a 25-Sided Dice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .container button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Roll a 25-Sided Dice</h1>
+        <button onclick="rollDice()">Roll the Dice</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const parts = [
+    { 
+        name: "Part I: The Union and its Territory", 
+        articles: [
+            {number: "1", description: "Article 1 states that India, that is Bharat, shall be a Union of States."},
+            {number: "2", description: "Article 2 empowers the Parliament to admit into the Union, or establish new states on such terms as it thinks fit."},
+            {number: "3", description: "Article 3 provides the power to the Parliament to form a new State by separation or union of existing States."},
+            {number: "4", description: "Article 4 specifies the laws made under Article 2 and 3 are not considered amendments of the Constitution."}
+        ]
+    },
+    { 
+        name: "Part II: Citizenship", 
+        articles: [
+            {number: "5", description: "Article 5 deals with citizenship at the commencement of the Constitution."},
+            {number: "6", description: "Article 6 provides citizenship rights to certain persons who have migrated to India from Pakistan."},
+            {number: "7", description: "Article 7 addresses rights of citizenship of certain migrants to Pakistan."},
+            {number: "8", description: "Article 8 provides citizenship rights to persons of Indian origin residing outside India."},
+            {number: "9", description: "Article 9 prohibits dual citizenship; no person shall be a citizen of India if they have voluntarily acquired citizenship of any foreign state."},
+            {number: "10", description: "Article 10 stipulates that every person who is or is deemed to be a citizen of India shall continue to be such a citizen."},
+            {number: "11", description: "Article 11 empowers the Parliament to regulate the right of citizenship by law."}
+        ]
+    },
+    { 
+        name: "Part III: Fundamental Rights", 
+        articles: [
+            {number: "12", description: "Article 12 defines the term 'State' for the purpose of Part III."},
+            {number: "13", description: "Article 13 provides for the protection against laws that violate the Fundamental Rights."},
+            {number: "14", description: "Article 14 guarantees equality before the law and equal protection of the laws."},
+            {number: "15", description: "Article 15 prohibits discrimination on grounds of religion, race, caste, sex, or place of birth."},
+            {number: "16", description: "Article 16 guarantees equality of opportunity in matters of public employment."},
+            {number: "17", description: "Article 17 abolishes 'untouchability' and forbids its practice in any form."},
+            {number: "18", description: "Article 18 abolishes all titles except military and academic distinctions."},
+            {number: "19", description: "Article 19 guarantees six freedoms to all citizens, including freedom of speech, assembly, and movement."},
+            {number: "20", description: "Article 20 provides protection in respect of conviction for offenses."},
+            {number: "21", description: "Article 21 guarantees the right to life and personal liberty."},
+            {number: "21A", description: "Article 21A mandates free and compulsory education for children aged 6 to 14 years."},
+            {number: "22", description: "Article 22 provides protection against arrest and detention in certain cases."},
+            {number: "23", description: "Article 23 prohibits human trafficking and forced labor."},
+            {number: "24", description: "Article 24 prohibits employment of children in factories and other hazardous conditions."},
+            {number: "25", description: "Article 25 guarantees the freedom of conscience and the right to freely profess, practice, and propagate religion."},
+            {number: "26", description: "Article 26 grants the freedom to manage religious affairs."},
+            {number: "27", description: "Article 27 prohibits the levying of taxes for promotion of any particular religion."},
+            {number: "28", description: "Article 28 prohibits religious instruction in educational institutions wholly maintained by the state."},
+            {number: "29", description: "Article 29 protects the interests of minorities by providing them the right to conserve their language, script, and culture."},
+            {number: "30", description: "Article 30 grants minorities the right to establish and administer educational institutions."},
+            {number: "31", description: "Article 31 (repealed) previously provided the right to property."},
+            {number: "32", description: "Article 32 provides the right to constitutional remedies for enforcement of Fundamental Rights."}
+        ]
+    },
+    { 
+        name: "Part IV: Directive Principles of State Policy", 
+        articles: [
+            {number: "36", description: "Article 36 defines the term 'State' for Part IV."},
+            {number: "37", description: "Article 37 states that the Directive Principles are not justiciable, but fundamental in the governance of the country."},
+            {number: "38", description: "Article 38 promotes the welfare of the people by securing a social order through justice."},
+            {number: "39", description: "Article 39 provides certain principles of policy to be followed by the State, such as adequate means of livelihood and equal pay for equal work."},
+            {number: "39A", description: "Article 39A mandates the provision of free legal aid for securing justice."},
+            {number: "40", description: "Article 40 directs the State to organize village panchayats."},
+            {number: "41", description: "Article 41 provides for the right to work, education, and public assistance."},
+            {number: "42", description: "Article 42 mandates the provision of just and humane conditions of work and maternity relief."},
+            {number: "43", description: "Article 43 directs the State to secure a living wage and ensure a decent standard of life."},
+            {number: "43A", description: "Article 43A encourages the participation of workers in management."},
+            {number: "44", description: "Article 44 advocates for a Uniform Civil Code for all citizens."},
+            {number: "45", description: "Article 45 provides for early childhood care and education for all children below the age of six years."},
+            {number: "46", description: "Article 46 promotes the educational and economic interests of Scheduled Castes, Scheduled Tribes, and other weaker sections."},
+            {number: "47", description: "Article 47 directs the State to raise the level of nutrition and the standard of living, and to improve public health."},
+            {number: "48", description: "Article 48 promotes agriculture and animal husbandry on modern and scientific lines."},
+            {number: "48A", description: "Article 48A directs the State to protect and improve the environment and safeguard forests and wildlife."},
+            {number: "49", description: "Article 49 directs the State to protect monuments of historic and national importance."},
+            {number: "50", description: "Article 50 aims to separate the judiciary from the executive."},
+            {number: "51", description: "Article 51 promotes international peace and security."}
+        ]
+    },
+    { 
+        name: "Part IVA: Fundamental Duties", 
+        articles: [
+            {number: "51A", description: "Article 51A lists the Fundamental Duties of every citizen of India, such as respecting the Constitution, national flag, and national anthem, and protecting the environment."}
+        ]
+    },
+    { 
+        name: "Part V: The Union", 
+        articles: [
+            {number: "52", description: "Article 52 states that there shall be a President of India."},
+            {number: "53", description: "Article 53 vests the executive power of the Union in the President."},
+            {number: "54", description: "Article 54 deals with the election of the President."},
+            {number: "55", description: "Article 55 provides for the manner of election of the President."},
+            {number: "56", description: "Article 56 deals with the conditions under which the President may be removed from office."},
+            {number: "57", description: "Article 57 provides for the re-election of the President."},
+            {number: "58", description: "Article 58 deals with the qualifications required for the President."},
+            {number: "59", description: "Article 59 details the conditions of the President's office and eligibility for re-election."},
+            {number: "60", description: "Article 60 specifies the President's oath of office."},
+            {number: "61", description: "Article 61 deals with the procedure for the impeachment of the President."},
+            {number: "62", description: "Article 62 deals with the time of holding elections to the House of the People and the State Legislative Assemblies."},
+            {number: "63", description: "Article 63 provides for the office of the Vice-President of India."},
+            {number: "64", description: "Article 64 deals with the Vice-President's role as the ex-officio Chairman of the Rajya Sabha."},
+            {number: "65", description: "Article 65 provides for the powers and duties of the Vice-President."},
+            {number: "66", description: "Article 66 deals with the election of the Vice-President."},
+            {number: "67", description: "Article 67 deals with the conditions under which the Vice-President may be removed from office."},
+            {number: "68", description: "Article 68 provides for the time of holding elections to the office of the President."},
+            {number: "69", description: "Article 69 deals with the oath or affirmation to be taken by the President."},
+            {number: "70", description: "Article 70 provides for the procedure for the resignation of the President or Vice-President."},
+            {number: "71", description: "Article 71 deals with the validation of certain elections."},
+            {number: "72", description: "Article 72 provides for the power of the President to grant pardons, reprieves, etc."},
+            {number: "73", description: "Article 73 provides for the distribution of powers between the Union and the States."},
+            {number: "74", description: "Article 74 provides for the Council of Ministers to aid and advise the President."},
+            {number: "75", description: "Article 75 deals with the appointment of the Prime Minister and other Ministers."},
+            {number: "76", description: "Article 76 provides for the Attorney General for India."},
+            {number: "77", description: "Article 77 deals with the conduct of business of the Government of India."},
+            {number: "78", description: "Article 78 provides for the duties of the Prime Minister in relation to the President."},
+            {number: "79", description: "Article 79 provides for the composition of the Parliament."},
+            {number: "80", description: "Article 80 deals with the composition of the Rajya Sabha."},
+            {number: "81", description: "Article 81 deals with the representation of the States and Union territories in the House of the People."},
+            {number: "82", description: "Article 82 provides for the readjustment of constituencies after each census."},
+            {number: "83", description: "Article 83 provides for the duration of the Houses of Parliament."},
+            {number: "84", description: "Article 84 provides for the qualifications for the membership of the Parliament."},
+            {number: "85", description: "Article 85 provides for the dissolution of the House of the People."},
+            {number: "86", description: "Article 86 provides for the powers of the President to summon and prorogue the Parliament."},
+            {number: "87", description: "Article 87 provides for the President's address at the beginning of the first session of each year."},
+            {number: "88", description: "Article 88 provides for the rights of ministers to participate in the proceedings of Parliament."},
+            {number: "89", description: "Article 89 provides for the Vice-President's role as the Chairman of the Rajya Sabha."},
+            {number: "90", description: "Article 90 provides for the powers of the Rajya Sabha to elect a Deputy Chairman."},
+            {number: "91", description: "Article 91 provides for the powers of the Speaker and Deputy Speaker of the House of the People."},
+            {number: "92", description: "Article 92 provides for the functions of the Speaker and Deputy Speaker of the House of the People."},
+            {number: "93", description: "Article 93 provides for the election of the Speaker and Deputy Speaker of the House of the People."},
+            {number: "94", description: "Article 94 provides for the resignation and removal of the Speaker and Deputy Speaker of the House of the People."},
+            {number: "95", description: "Article 95 provides for the powers of the Speaker to adjourn the House."},
+            {number: "96", description: "Article 96 provides for the powers of the Speaker to maintain order in the House."},
+            {number: "97", description: "Article 97 provides for the powers of the Speaker to expel members from the House."},
+            {number: "98", description: "Article 98 provides for the rights and privileges of members of Parliament."},
+            {number: "99", description: "Article 99 provides for the oath or affirmation to be taken by members of Parliament."},
+            {number: "100", description: "Article 100 deals with the quorum for meetings of the Parliament."},
+            {number: "101", description: "Article 101 deals with the vacation of seats by members of Parliament."},
+            {number: "102", description: "Article 102 deals with the disqualification of members of Parliament."},
+            {number: "103", description: "Article 103 deals with the decision of the President on disqualification of members of Parliament."},
+            {number: "104", description: "Article 104 deals with the power of the Parliament to prescribe the conduct of members."},
+            {number: "105", description: "Article 105 deals with the privileges and immunities of members of Parliament."},
+            {number: "106", description: "Article 106 deals with the salaries and allowances of members of Parliament."},
+            {number: "107", description: "Article 107 deals with the procedure for making laws in Parliament."},
+            {number: "108", description: "Article 108 deals with the procedure for the consideration of bills in Parliament."},
+            {number: "109", description: "Article 109 deals with the procedure for the passage of bills in Parliament."},
+            {number: "110", description: "Article 110 deals with the procedure for the passage of money bills in Parliament."},
+            {number: "111", description: "Article 111 deals with the President's power to return a bill to Parliament."},
+            {number: "112", description: "Article 112 deals with the presentation of the annual financial statement."},
+            {number: "113", description: "Article 113 deals with the procedure for the consideration of the annual financial statement."},
+            {number: "114", description: "Article 114 deals with the powers of the Parliament to make laws on financial matters."},
+            {number: "115", description: "Article 115 deals with the powers of the Parliament to make laws on certain matters not included in the financial statement."},
+            {number: "116", description: "Article 116 deals with the powers of the Parliament to make laws on matters related to taxes."},
+            {number: "117", description: "Article 117 deals with the powers of the Parliament to make laws on matters related to public expenditure."},
+            {number: "118", description: "Article 118 deals with the powers of the Parliament to make laws on matters related to the State's finances."},
+            {number: "119", description: "Article 119 deals with the powers of the Parliament to make laws on matters related to the Union's finances."},
+            {number: "120", description: "Article 120 deals with the powers of the Parliament to make laws on matters related to the Union's revenue."},
+            {number: "121", description: "Article 121 deals with the restriction on discussion of the conduct of judges."},
+            {number: "122", description: "Article 122 deals with the validity of proceedings of Parliament."},
+            {number: "123", description: "Article 123 provides for the President's power to promulgate ordinances during the recess of Parliament."},
+            {number: "124", description: "Article 124 provides for the establishment of the Supreme Court of India."},
+            {number: "125", description: "Article 125 provides for the salaries of the Chief Justice and other judges of the Supreme Court."},
+            {number: "126", description: "Article 126 provides for the appointment of acting Chief Justice and additional judges."},
+            {number: "127", description: "Article 127 provides for the appointment of additional judges to the Supreme Court."},
+            {number: "128", description: "Article 128 provides for the appointment of retired judges to act as judges of the Supreme Court."},
+            {number: "129", description: "Article 129 declares the Supreme Court to be the highest court of record and its powers in regard to contempt of court."},
+            {number: "130", description: "Article 130 provides for the seat of the Supreme Court in Delhi."},
+            {number: "131", description: "Article 131 provides for the original jurisdiction of the Supreme Court in disputes between states or between states and the Union."},
+            {number: "132", description: "Article 132 provides for the appellate jurisdiction of the Supreme Court in cases involving constitutional issues."},
+            {number: "133", description: "Article 133 provides for the appellate jurisdiction of the Supreme Court in civil cases."},
+            {number: "134", description: "Article 134 provides for the appellate jurisdiction of the Supreme Court in criminal cases."},
+            {number: "135", description: "Article 135 provides for the Supreme Court's jurisdiction over matters arising from State High Courts' decisions."},
+            {number: "136", description: "Article 136 provides for the Supreme Court's power to grant special leave to appeal from any court or tribunal."},
+            {number: "137", description: "Article 137 provides for the review of judgments by the Supreme Court."},
+            {number: "138", description: "Article 138 provides for the extension of the Supreme Court's jurisdiction to other matters specified by Parliament."},
+            {number: "139", description: "Article 139 provides for the Supreme Court's power to issue directions or orders for the enforcement of fundamental rights."},
+            {number: "140", description: "Article 140 provides for the conferment of powers on the Supreme Court to make rules for regulating its own procedures."},
+            {number: "141", description: "Article 141 provides that the law declared by the Supreme Court shall be binding on all courts in India."},
+            {number: "142", description: "Article 142 provides for the Supreme Court's power to enforce its own decrees and orders."},
+            {number: "143", description: "Article 143 provides for the advisory jurisdiction of the Supreme Court to give advice on constitutional matters."},
+            {number: "144", description: "Article 144 provides for the enforcement of the Supreme Court's decisions and orders by all courts."},
+            {number: "145", description: "Article 145 provides for the Supreme Court's power to make rules for the regulation of its procedures and practice."},
+            {number: "146", description: "Article 146 provides for the salaries and allowances of the judges of the Supreme Court and High Courts."},
+            {number: "147", description: "Article 147 provides for the appointment and conditions of service of the Supreme Court's officers and staff."},
+            {number: "148", description: "Article 148 provides for the appointment of the Comptroller and Auditor General of India."},
+            {number: "149", description: "Article 149 provides for the powers and functions of the Comptroller and Auditor General of India."},
+            {number: "150", description: "Article 150 provides for the uniformity in the format of accounts of the Union and State Governments."},
+            {number: "151", description: "Article 151 provides for the Comptroller and Auditor General of India's reports to be submitted to the President and the Parliament."}
+        ]
+    },
+    { 
+        name: "Part VI: The States", 
+        articles: [
+            // Articles 152 to 221 provided previously...
+            {number: "152", description: "Article 152 defines the term 'State' for the purposes of the Constitution."},
+            {number: "153", description: "Article 153 provides for the appointment of Governors for States."},
+            {number: "154", description: "Article 154 vests the executive power of the State in the Governor."},
+            {number: "155", description: "Article 155 deals with the appointment of the Governor by the President."},
+            {number: "156", description: "Article 156 provides for the term of office of the Governor and conditions for removal."},
+            {number: "157", description: "Article 157 specifies the qualifications for the appointment of a Governor."},
+            {number: "158", description: "Article 158 deals with the conditions of the Governor's office."},
+            {number: "159", description: "Article 159 provides for the Governor's oath of office."},
+            {number: "160", description: "Article 160 provides for the appointment of an Acting Governor or a Governor for a State."},
+            {number: "161", description: "Article 161 provides for the Governor's power to grant pardons, reprieves, etc."},
+            {number: "162", description: "Article 162 vests the executive power of the State in the Governor and specifies the State’s jurisdiction."},
+            {number: "163", description: "Article 163 provides for the Council of Ministers to aid and advise the Governor."},
+            {number: "164", description: "Article 164 deals with the appointment of the Chief Minister and other Ministers in a State."},
+            {number: "165", description: "Article 165 provides for the appointment of the Advocate General for the State."},
+            {number: "166", description: "Article 166 specifies the conduct of business in the State government."},
+            {number: "167", description: "Article 167 provides for the duties of the Chief Minister in relation to the Governor."},
+            {number: "168", description: "Article 168 provides for the composition of the State Legislature."},
+            {number: "169", description: "Article 169 provides for the creation or abolition of State Legislative Councils."},
+            {number: "170", description: "Article 170 deals with the composition of the Legislative Assembly in the States."},
+            {number: "171", description: "Article 171 deals with the representation of the Scheduled Castes and Scheduled Tribes in the Legislative Assembly."},
+            {number: "172", description: "Article 172 provides for the duration of the State Legislature."},
+            {number: "173", description: "Article 173 provides for the qualifications for membership of the State Legislature."},
+            {number: "174", description: "Article 174 deals with the dissolution of the Legislative Assembly by the Governor."},
+            {number: "175", description: "Article 175 provides for the Governor's address to the Legislature."},
+            {number: "176", description: "Article 176 deals with the speech delivered by the Governor at the commencement of the State Legislature session."},
+            {number: "177", description: "Article 177 provides for the Governor’s powers to summon and prorogue the State Legislature."},
+            {number: "178", description: "Article 178 provides for the election of the Speaker and Deputy Speaker of the Legislative Assembly."},
+            {number: "179", description: "Article 179 deals with the powers of the Speaker and Deputy Speaker of the Legislative Assembly."},
+            {number: "180", description: "Article 180 provides for the appointment of the Speaker and Deputy Speaker in case of a vacancy."},
+            {number: "181", description: "Article 181 deals with the resignation and removal of the Speaker and Deputy Speaker."},
+            {number: "182", description: "Article 182 provides for the duties and powers of the Speaker and Deputy Speaker."},
+            {number: "183", description: "Article 183 deals with the powers of the Speaker in relation to the conduct of business in the Legislative Assembly."},
+            {number: "184", description: "Article 184 provides for the powers of the Speaker to maintain order in the Legislative Assembly."},
+            {number: "185", description: "Article 185 deals with the powers of the Speaker to expel members from the Assembly."},
+            {number: "186", description: "Article 186 provides for the rights and privileges of members of the State Legislature."},
+            {number: "187", description: "Article 187 deals with the oath or affirmation of members of the State Legislature."},
+            {number: "188", description: "Article 188 provides for the quorum for the meetings of the State Legislature."},
+            {number: "189", description: "Article 189 deals with the vacation of seats by members of the State Legislature."},
+            {number: "190", description: "Article 190 deals with the disqualification of members of the State Legislature."},
+            {number: "191", description: "Article 191 deals with the decision of the Governor on disqualification of members of the State Legislature."},
+            {number: "192", description: "Article 192 provides for the powers of the State Legislature to make laws."},
+            {number: "193", description: "Article 193 deals with the procedure for making laws in the State Legislature."},
+            {number: "194", description: "Article 194 deals with the privileges and immunities of members of the State Legislature."},
+            {number: "195", description: "Article 195 provides for the salaries and allowances of members of the State Legislature."},
+            {number: "196", description: "Article 196 deals with the procedure for making laws on matters not included in the State List."},
+            {number: "197", description: "Article 197 deals with the procedure for making laws on matters included in the State List."},
+            {number: "198", description: "Article 198 deals with the powers of the State Legislature to make laws on certain matters."},
+            {number: "199", description: "Article 199 provides for the powers of the State Legislature to make laws on matters of public interest."},
+            {number: "200", description: "Article 200 provides for the Governor’s powers to assent to or withhold assent from bills."},
+            {number: "201", description: "Article 201 provides for the power of the Governor to return a bill with a request for reconsideration."},
+            {number: "202", description: "Article 202 provides for the presentation of the annual financial statement in the State Legislature."},
+            {number: "203", description: "Article 203 deals with the consideration of the annual financial statement by the State Legislature."},
+            {number: "204", description: "Article 204 provides for the manner of appropriating funds for expenditure in the State Legislature."},
+            {number: "205", description: "Article 205 deals with the procedure for making laws on matters of taxation and public expenditure."},
+            {number: "206", description: "Article 206 deals with the powers of the State Legislature to make laws on matters related to State finances."},
+            {number: "207", description: "Article 207 provides for the powers of the State Legislature to make laws on matters related to public services."},
+            {number: "208", description: "Article 208 provides for the rules of procedure for the conduct of business in the State Legislature."},
+            {number: "209", description: "Article 209 deals with the powers of the State Legislature to make laws on matters related to the administration of justice."},
+            {number: "210", description: "Article 210 provides for the conduct of business in the State Legislature."},
+            {number: "211", description: "Article 211 provides for the power of the Governor to dissolve the State Legislature."},
+            {number: "212", description: "Article 212 deals with the powers of the State Legislature in relation to the administration of justice."},
+            {number: "213", description: "Article 213 provides for the power of the Governor to make ordinances during the recess of the State Legislature."},
+            {number: "214", description: "Article 214 deals with the establishment of High Courts in the States."},
+            {number: "215", description: "Article 215 provides for the jurisdiction and powers of High Courts in the States."},
+            {number: "216", description: "Article 216 provides for the composition of High Courts in the States."},
+            {number: "217", description: "Article 217 deals with the appointment and conditions of service of High Court judges."},
+            {number: "218", description: "Article 218 provides for the appointment of judges to the High Courts."},
+            {number: "219", description: "Article 219 provides for the conditions of service of High Court judges."},
+            {number: "220", description: "Article 220 provides for the prohibition of practice by judges after retirement."},
+            {number: "221", description: "Article 221 provides for the salaries and allowances of High Court judges."},
+            {number: "222", description: "Article 222 provides for the transfer of High Court judges from one High Court to another."},
+            {number: "223", description: "Article 223 provides for the appointment of an acting Chief Justice of the High Court."},
+            {number: "224", description: "Article 224 provides for the appointment of additional judges to the High Court when necessary."},
+            {number: "224A", description: "Article 224A provides for the appointment of retired High Court judges to act as judges of the High Court."},
+            {number: "225", description: "Article 225 provides for the jurisdiction of the High Court over the State and its authority to issue writs."},
+            {number: "226", description: "Article 226 empowers the High Court to issue writs for the enforcement of fundamental rights and other legal rights."},
+            {number: "227", description: "Article 227 provides for the supervision of the High Court over all courts and tribunals in the State."},
+            {number: "228", description: "Article 228 provides for the transfer of cases from subordinate courts to the High Court."},
+            {number: "229", description: "Article 229 deals with the powers of the High Court to make rules for the regulation of its own procedures."},
+            {number: "230", description: "Article 230 provides for the extension of the jurisdiction of the High Court to Union Territories."},
+            {number: "231", description: "Article 231 provides for the establishment of a High Court for a new State."},
+            {number: "232", description: "Article 232 provides for the jurisdiction of the High Court in respect of disputes related to the State Legislature."},
+            {number: "233", description: "Article 233 deals with the appointment of district judges and their conditions of service."},
+            {number: "234", description: "Article 234 provides for the appointment of officers to subordinate courts."},
+            {number: "235", description: "Article 235 deals with the control of the High Court over subordinate courts."},
+            {number: "236", description: "Article 236 provides for the definition of 'district judge' and other terms relating to the judiciary."},
+            {number: "237", description: "Article 237 provides for the application of certain provisions of the Constitution to subordinate courts."}
+        ]
+    },
+    { 
+        name: "Part VII: The States in Part B of the First Schedule", 
+        articles: [
+            {number: "238", description: "Article 238 was omitted by the 73rd Amendment Act, 1992. It used to provide for the administration of the States in Part B of the First Schedule."}
+        ]
+    },
+    { 
+        name: "Part VIII: The Union Territories", 
+        articles: [
+            {number: "239", description: "Article 239 provides for the appointment of administrators for Union Territories."},
+            {number: "240", description: "Article 240 provides for the administration of Union Territories."},
+            {number: "241", description: "Article 241 provides for the establishment of High Courts for Union Territories."},
+            {number: "242", description: "Article 242 was omitted by the 73rd Amendment Act, 1992."}
+        ]
+    },
+    { 
+        name: "Part IX: The Panchayats", 
+        articles: [
+            {number: "243", description: "Article 243 provides for the establishment of Panchayats in rural areas."},
+            {number: "243A", description: "Article 243A provides for the composition of Panchayats."},
+            {number: "243B", description: "Article 243B deals with the composition of Panchayats at different levels."},
+            {number: "243C", description: "Article 243C provides for the composition of the Panchayats and the manner of their election."},
+            {number: "243D", description: "Article 243D provides for the reservation of seats in Panchayats for Scheduled Castes, Scheduled Tribes, and women."},
+            {number: "243E", description: "Article 243E deals with the powers and responsibilities of Panchayats."},
+            {number: "243F", description: "Article 243F provides for the conditions of service and the remuneration of Panchayat members."},
+            {number: "243G", description: "Article 243G provides for the powers and functions of Panchayats regarding the planning and implementation of development schemes."},
+            {number: "243H", description: "Article 243H provides for the imposition of taxes by Panchayats and the sources of their revenue."},
+            {number: "243I", description: "Article 243I provides for the creation of a State Finance Commission to review the financial position of Panchayats."},
+            {number: "243J", description: "Article 243J deals with the powers of the Panchayats to carry out their functions effectively."}
+        ]
+    },
+    { 
+        name: "Part IXA: The Municipalities", 
+        articles: [
+            {number: "243P", description: "Article 243P provides for the establishment of Municipalities in urban areas."},
+            {number: "243Q", description: "Article 243Q deals with the composition and election of Municipalities."},
+            {number: "243R", description: "Article 243R provides for the composition of Municipalities and the manner of their election."},
+            {number: "243S", description: "Article 243S provides for the powers and responsibilities of Municipalities."},
+            {number: "243T", description: "Article 243T deals with the reservation of seats in Municipalities for Scheduled Castes, Scheduled Tribes, and women."},
+            {number: "243U", description: "Article 243U provides for the composition of Municipalities at different levels."},
+            {number: "243V", description: "Article 243V provides for the imposition of taxes by Municipalities and the sources of their revenue."},
+            {number: "243W", description: "Article 243W provides for the creation of a State Finance Commission to review the financial position of Municipalities."}
+        ]
+    },
+    { 
+        name: "Part X: The Scheduled and Tribal Areas", 
+        articles: [
+            {number: "244", description: "Article 244 deals with the administration of tribal areas and the establishment of Tribal Advisory Councils."},
+            {number: "244A", description: "Article 244A provides for the creation of autonomous districts in the States of Assam, Meghalaya, and Tripura."}
+        ]
+    },
+    { 
+        name: "Part XI: Relations Between the Union and the States", 
+        articles: [
+            {number: "245", description: "Article 245 deals with the extent of laws made by the Parliament and State Legislatures."},
+            {number: "246", description: "Article 246 provides for the division of powers between the Union and States."},
+            {number: "247", description: "Article 247 provides for the establishment of additional courts by the Parliament."},
+            {number: "248", description: "Article 248 provides for the power of the Parliament to legislate on matters not enumerated in the State List."},
+            {number: "249", description: "Article 249 provides for the power of the Parliament to legislate on matters in the State List in the national interest."},
+            {number: "250", description: "Article 250 provides for the power of the Parliament to legislate on matters in the State List during a national emergency."},
+            {number: "251", description: "Article 251 provides for the resolution of conflicts between Central and State laws."},
+            {number: "252", description: "Article 252 provides for the power of the States to legislate on matters in the State List by mutual consent."},
+            {number: "253", description: "Article 253 provides for the implementation of international agreements by the Parliament."},
+            {number: "254", description: "Article 254 deals with the inconsistency between State and Central laws."},
+            {number: "255", description: "Article 255 deals with the application of laws made by Parliament or State Legislatures."},
+            {number: "256", description: "Article 256 deals with the duties of the State and the Union to ensure compliance with laws made by the Parliament."},
+            {number: "257", description: "Article 257 provides for the control of the Union over the States in matters related to the maintenance of public order."},
+            {number: "258", description: "Article 258 provides for the delegation of powers by the Union to the States."},
+            {number: "259", description: "Article 259 provides for the delegation of powers by the States to the Union."},
+            {number: "260", description: "Article 260 deals with the jurisdiction of the Union in relation to the States."},
+            {number: "261", description: "Article 261 provides for the power of the States to make laws in relation to certain subjects."},
+            {number: "262", description: "Article 262 provides for the resolution of disputes relating to waters of inter-State rivers and river valleys."},
+            {number: "263", description: "Article 263 provides for the establishment of an Inter-State Council."}
+        ]
+    },
+    { 
+        name: "Part XII: Finance, Property, Contracts and Suits", 
+        articles: [
+            {number: "264", description: "Article 264 was omitted by the 73rd Amendment Act, 1992."},
+            {number: "265", description: "Article 265 provides for the imposition of taxes by the Union and States."},
+            {number: "266", description: "Article 266 deals with the composition of the Consolidated Fund of India and the State Consolidated Funds."},
+            {number: "267", description: "Article 267 provides for the Contingency Fund of India and the States."},
+            {number: "268", description: "Article 268 provides for the distribution of taxes between the Union and the States."},
+            {number: "269", description: "Article 269 deals with the imposition of taxes on the sale or purchase of goods in the course of inter-State trade."},
+            {number: "270", description: "Article 270 provides for the allocation of the proceeds of taxes between the Union and States."},
+            {number: "271", description: "Article 271 deals with the imposition of surcharges on taxes for the purpose of the Union."},
+            {number: "272", description: "Article 272 provides for the distribution of the proceeds of taxes between the Union and the States."},
+            {number: "273", description: "Article 273 deals with the provision of grants-in-aid by the Union to the States."},
+            {number: "274", description: "Article 274 provides for the allocation of funds by the Union to the States for specific purposes."},
+            {number: "275", description: "Article 275 provides for the payment of grants-in-aid by the Union to the States for promoting the welfare of the people."},
+            {number: "276", description: "Article 276 deals with the levy of taxes on goods and services."},
+            {number: "277", description: "Article 277 deals with the provision of tax revenues for the maintenance of certain services."},
+            {number: "278", description: "Article 278 provides for the distribution of the proceeds of taxes between the Union and the States."},
+            {number: "279", description: "Article 279 deals with the composition and functions of the Finance Commission, which reviews the financial relations between the Union and the States."},
+            {number: "280", description: "Article 280 provides for the appointment of a Finance Commission by the President to review the financial position of the States and recommend the distribution of funds between the Union and the States."},
+            {number: "281", description: "Article 281 deals with the recommendations of the Finance Commission and their implementation."},
+            {number: "282", description: "Article 282 provides for the allocation of resources by the Union to the States for specific purposes."},
+            {number: "283", description: "Article 283 deals with the management of the finances of the States, including the appointment of a Comptroller and Auditor General for the States."},
+            {number: "284", description: "Article 284 provides for the preparation and auditing of accounts of the States."},
+            {number: "285", description: "Article 285 provides for the presentation of the financial statements of the States to their respective Legislatures."},
+            {number: "286", description: "Article 286 deals with the imposition of taxes on the sale or purchase of goods in the course of inter-State trade."},
+            {number: "287", description: "Article 287 provides for the exemption of certain goods from State taxation in the course of inter-State trade."},
+            {number: "288", description: "Article 288 deals with the provision of tax incentives for inter-State trade and commerce."},
+            {number: "289", description: "Article 289 deals with the transfer of property and assets between the Union and the States."},
+            {number: "290", description: "Article 290 provides for the adjustment of certain expenses between the Union and the States."},
+            {number: "291", description: "Article 291 deals with the payment of certain pensions and allowances by the Union and the States."},
+            {number: "292", description: "Article 292 provides for the management of public debt and borrowing by the Union and the States."},
+            {number: "293", description: "Article 293 deals with the allocation of resources for the repayment of loans and debts."},
+            {number: "294", description: "Article 294 provides for the distribution of the property and assets of the Union and the States."},
+            {number: "295", description: "Article 295 deals with the allocation of certain property between the Union and the States."},
+            {number: "296", description: "Article 296 provides for the management and control of property and assets in the Union and the States."},
+            {number: "297", description: "Article 297 deals with the management of the public debt and its repayment by the Union and the States."},
+            {number: "298", description: "Article 298 provides for the management of public debt and borrowing by the Union and the States."},
+            {number: "299", description: "Article 299 deals with the contracts made by the Union and the States."},
+            {number: "300", description: "Article 300 provides for the power of the Union and the States to sue and be sued in matters related to their financial dealings."}
+        ]
+    },
+    { 
+        name: "Part XIII: Trade, Commerce and Intercourse Within the Territory of India", 
+        articles: [
+            {number: "301", description: "Article 301 provides for the freedom of trade, commerce, and intercourse throughout the territory of India."},
+            {number: "302", description: "Article 302 allows Parliament to impose restrictions on the freedom of trade and commerce in the public interest."},
+            {number: "303", description: "Article 303 prohibits discrimination by the Union or State Governments against any State or region in terms of trade and commerce."},
+            {number: "304", description: "Article 304 allows State Legislatures to impose restrictions on trade and commerce within the State for the public interest."},
+            {number: "305", description: "Article 305 deals with the power of the Union and State Legislatures to regulate trade and commerce and impose taxes."},
+            {number: "306", description: "Article 306 was omitted by the 7th Amendment Act, 1956."},
+            {number: "307", description: "Article 307 provides for the appointment of a Commission to investigate and report on trade and commerce within the State."}
+        ]
+    },
+    { 
+        name: "Part XIV: Services Under the Union and the States", 
+        articles: [
+            {number: "308", description: "Article 308 defines the terms 'State' and 'Union' for the purposes of this Part."},
+            {number: "309", description: "Article 309 provides for the recruitment and conditions of service of persons appointed to public services and posts by the Union and States."},
+            {number: "310", description: "Article 310 deals with the tenure of office and the conditions of service of persons in the public service, and their dismissal and removal."},
+            {number: "311", description: "Article 311 provides for the procedures for the dismissal, removal, or reduction in rank of public servants."},
+            {number: "312", description: "Article 312 empowers the Parliament to create All-India Services if necessary for the proper administration of the Union and States."},
+            {number: "313", description: "Article 313 deals with the continuation of existing services and the provisions for the creation of new services."},
+            {number: "314", description: "Article 314 was omitted by the 42nd Amendment Act, 1976."},
+            {number: "315", description: "Article 315 provides for the establishment of a Public Service Commission for the Union and each State to oversee recruitment and conditions of service."},
+            {number: "316", description: "Article 316 deals with the appointment and conditions of service of the Chairman and members of the Public Service Commission."},
+            {number: "317", description: "Article 317 provides for the removal and suspension of the Chairman or members of the Public Service Commission."},
+            {number: "318", description: "Article 318 provides for the conditions of service and tenure of the members of the Public Service Commission, and the manner of their appointment."},
+            {number: "319", description: "Article 319 provides for the restriction on the eligibility of members of the Public Service Commission for reappointment to any other office."},
+            {number: "320", description: "Article 320 deals with the functions of the Public Service Commission, including advising the Union and State Governments on recruitment and service matters."},
+            {number: "321", description: "Article 321 provides for the powers and functions of the Public Service Commission concerning recruitment and conditions of service."},
+            {number: "322", description: "Article 322 provides for the expenses of the Public Service Commission to be charged on the Consolidated Fund of India or the State."},
+            {number: "323", description: "Article 323 deals with the creation of other Commissions, such as the State Public Service Commissions, to address specific issues related to services."}
+        ]
+    },
+    { 
+        name: "Part XV: Elections", 
+        articles: [
+            {number: "324", description: "Article 324 provides for the establishment of an Election Commission to oversee and conduct elections to the Lok Sabha, Rajya Sabha, and State Legislatures."},
+            {number: "325", description: "Article 325 ensures that all citizens of India have the right to vote and no person shall be denied the right to vote based on religion, race, caste, or sex."},
+            {number: "326", description: "Article 326 provides for the elections to the Lok Sabha and State Legislatures to be conducted on the basis of adult franchise."},
+            {number: "327", description: "Article 327 gives Parliament the power to make laws relating to the conduct of elections and the composition of the Election Commission."},
+            {number: "328", description: "Article 328 empowers State Legislatures to make laws on matters relating to elections to the State Legislature."},
+            {number: "329", description: "Article 329 provides for the conduct of elections to the Lok Sabha and State Legislatures and stipulates the role of the Election Commission."},
+            {number: "330", description: "Article 330 provides for the reservation of seats for Scheduled Castes and Scheduled Tribes in the Lok Sabha."},
+            {number: "331", description: "Article 331 allows for the representation of Anglo-Indian community in the Lok Sabha if the President deems it necessary."},
+            {number: "332", description: "Article 332 provides for the reservation of seats for Scheduled Castes and Scheduled Tribes in the State Legislatures."},
+            {number: "333", description: "Article 333 allows for the representation of the Anglo-Indian community in the State Legislatures if the Governor deems it necessary."},
+            {number: "334", description: "Article 334 deals with the reservation of seats for Scheduled Castes and Scheduled Tribes in the Lok Sabha and State Legislatures and their representation."}
+        ]
+    },
+    { 
+        name: "Part XVI: Special Provisions Relating to Certain Classes", 
+        articles: [
+            {number: "335", description: "Article 335 provides for the claims of Scheduled Castes and Scheduled Tribes in the services and jobs in the Union and State Governments."},
+            {number: "336", description: "Article 336 provides for the special provisions for the educational interests of Scheduled Castes and Scheduled Tribes."},
+            {number: "337", description: "Article 337 deals with the representation of the Anglo-Indian community in certain State Legislatures."},
+            {number: "338", description: "Article 338 provides for the appointment of a National Commission for Scheduled Castes to investigate and monitor the conditions of Scheduled Castes."},
+            {number: "339", description: "Article 339 deals with the appointment of a National Commission for Scheduled Tribes to investigate and monitor the conditions of Scheduled Tribes."},
+            {number: "340", description: "Article 340 provides for the appointment of a Commission to examine the conditions of socially and educationally backward classes."},
+            {number: "341", description: "Article 341 provides for the specification of Scheduled Castes by the President for the purposes of the Constitution."},
+            {number: "342", description: "Article 342 provides for the specification of Scheduled Tribes by the President for the purposes of the Constitution."}
+        ]
+    },
+    { 
+        name: "Part XVII: Official Language", 
+        articles: [
+            {number: "343", description: "Article 343 declares Hindi as the official language of the Republic of India and provides for the use of English for official purposes."},
+            {number: "344", description: "Article 344 provides for the formation of a Commission to review the implementation of the official language policy."},
+            {number: "345", description: "Article 345 allows States to adopt their own official languages for use in State matters."},
+            {number: "346", description: "Article 346 provides for the official language of communication between the Union and States."},
+            {number: "347", description: "Article 347 provides for the appointment of a Commission to investigate the needs of minority languages in certain States."},
+            {number: "348", description: "Article 348 provides for the use of Hindi or English in the courts, legislatures, and other official purposes."},
+            {number: "349", description: "Article 349 provides for the appointment of a Commission to examine the needs of minority languages in certain regions."},
+            {number: "350", description: "Article 350 provides for the use of language by citizens to represent their grievances to the authorities."},
+            {number: "351", description: "Article 351 provides for the development of Hindi as a national language."}
+        ]
+    },
+    { 
+        name: "Part XVIII: Emergency Provisions", 
+        articles: [
+            {number: "352", description: "Article 352 provides for the declaration of a national emergency in case of a threat to the security of India."},
+            {number: "353", description: "Article 353 deals with the provisions for the declaration of emergency in a particular State or region."},
+            {number: "354", description: "Article 354 provides for the suspension of the enforcement of fundamental rights during the emergency."},
+            {number: "355", description: "Article 355 deals with the duty of the Union to protect States against external aggression and internal disturbance."},
+            {number: "356", description: "Article 356 provides for the imposition of President's Rule in a State if the President believes that the government in the State cannot be carried on according to the provisions of the Constitution."},
+            {number: "357", description: "Article 357 provides for the power of the Union to direct the State Government in matters related to administration during President's Rule."},
+            {number: "358", description: "Article 358 provides for the suspension of the enforcement of certain fundamental rights during a national emergency."},
+            {number: "359", description: "Article 359 deals with the suspension of fundamental rights during emergency, except those related to the protection of life and personal liberty."},
+            {number: "360", description: "Article 360 provides for the declaration of financial emergency if the financial stability or credit of India is threatened."}
+        ]
+    },
+    { 
+        name: "Part XIX: Miscellaneous", 
+        articles: [
+            {number: "361", description: "Article 361 provides for the protection of the President and the Governor from legal proceedings in respect of their official acts."},
+            {number: "362", description: "Article 362 deals with the power of the State to make special provisions for the protection and welfare of certain communities."},
+            {number: "363", description: "Article 363 deals with the settlement of disputes between the Union and States and among States."},
+            {number: "364", description: "Article 364 provides for the power of the Union to legislate for the whole or any part of India."},
+            {number: "365", description: "Article 365 deals with the powers of the Union to direct the State Government in certain matters."},
+            {number: "366", description: "Article 366 provides definitions of certain terms used in the Constitution."},
+            {number: "367", description: "Article 367 provides for the interpretation of the Constitution."},
+            {number: "368", description: "Article 368 provides for the amendment of the Constitution."}
+        ]
+    },
+    { 
+        name: "Part XX: Amendment of the Constitution", 
+        articles: [
+            {number: "369", description: "Article 369 deals with the amendment of the Constitution and the procedures involved in such amendments."},
+            {number: "370", description: "Article 370 was omitted by the 37th Amendment Act, 1956, and provided for special provisions for Jammu and Kashmir."}
+        ]
+    },
+    { 
+        name: "Part XXI: Temporary, Transitional and Special Provisions", 
+        articles: [
+            {number: "371", description: "Article 371 provides for special provisions for certain States such as Maharashtra and Gujarat."},
+            {number: "371A", description: "Article 371A provides for special provisions for the State of Nagaland."},
+            {number: "371B", description: "Article 371B provides for special provisions for the State of Assam."},
+            {number: "371C", description: "Article 371C provides for special provisions for the State of Manipur."},
+            {number: "371D", description: "Article 371D provides for special provisions for the State of Andhra Pradesh."},
+            {number: "371E", description: "Article 371E was omitted by the 32nd Amendment Act, 1973."},
+            {number: "371F", description: "Article 371F provides for special provisions for the State of Sikkim."},
+            {number: "372", description: "Article 372 provides for the continuation of existing laws in force at the commencement of the Constitution."},
+            {number: "373", description: "Article 373 provides for the extension of existing laws to the Union Territories."},
+            {number: "374", description: "Article 374 provides for the appointment of the first Chief Justice of India and other Judges of the Supreme Court."},
+            {number: "375", description: "Article 375 provides for the appointment of the first High Court Judges."},
+            {number: "376", description: "Article 376 provides for the powers of the President to appoint High Court Judges."},
+            {number: "377", description: "Article 377 provides for the appointments of the Chief Justice and other Judges of High Courts."}
+        ]
+    },
+    { 
+        name: "Part XXII: Short Title, Commencement, Authoritative Text in Hindi and Repeals", 
+        articles: [
+            {number: "378", description: "Article 378 provides for the short title of the Constitution."},
+            {number: "379", description: "Article 379 deals with the commencement of the Constitution."},
+            {number: "380", description: "Article 380 provides for the authoritative text of the Constitution in Hindi."},
+            {number: "381", description: "Article 381 provides for the repeal of certain Acts and Regulations."}
+        ]
+    },
+    { 
+        name: "Part XXIII: Provisions Relating to the States of Sikkim", 
+        articles: [
+            {number: "382", description: "Article 382 was omitted by the 36th Amendment Act, 1975."},
+            {number: "383", description: "Article 383 was omitted by the 36th Amendment Act, 1975."},
+            {number: "384", description: "Article 384 was omitted by the 36th Amendment Act, 1975."},
+            {number: "385", description: "Article 385 was omitted by the 36th Amendment Act, 1975."},
+            {number: "386", description: "Article 386 was omitted by the 36th Amendment Act, 1975."}
+        ]
+    },
+    { 
+        name: "Part XXIV: Continuance of Existing Laws", 
+        articles: [
+            {number: "387", description: "Article 387 provides for the continuance of existing laws and the treatment of laws made by States before the Constitution came into force."},
+            {number: "388", description: "Article 388 was omitted by the 41st Amendment Act, 1976."}
+        ]
+    },
+    { 
+        name: "Part XXV: Repeals", 
+        articles: [
+            {number: "389", description: "Article 389 deals with the repeal of certain laws and provisions that were in force prior to the Constitution."}
+        ]
+    },
+    { 
+        name: "Part XXVI: Transitional Provisions", 
+        articles: [
+            {number: "390", description: "Article 390 provides for transitional provisions relating to the administration and governance of the newly established States and Union Territories."}
+        ]
+    }
+];
+function rollDice() {
+            // Roll a 25-sided dice
+            const diceRoll = Math.floor(Math.random() * parts.length);
+            
+            // Get the corresponding part
+            const part = parts[diceRoll];
+
+            // Select a random article from the chosen part
+            const randomArticle = part.articles[Math.floor(Math.random() * part.articles.length)];
+
+            // Display the result
+            const result = document.getElementById("result");
+            result.innerHTML = `
+                <h2>${part.name}</h2>
+                <p><strong>Random Article: ${randomArticle.number}</strong></p>
+                <p>${randomArticle.description}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
